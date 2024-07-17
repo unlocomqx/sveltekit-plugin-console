@@ -1,58 +1,40 @@
-# create-svelte
+# sveltekit-plugin-console
 
-Everything you need to build a Svelte library, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+Output server logs to the browser console.
 
-Read more about creating a library [in the docs](https://kit.svelte.dev/docs/packaging).
+## Install
 
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
+```shell
+pnpm add -D sveltekit-plugin-console
 ```
 
-## Developing
+## Setup
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+```ts
+// vite.config.ts
+import { ConsolePlugin } from './src/lib/index.js';
+...
+plugins: [sveltekit(), ConsolePlugin()],
 ```
 
-Everything inside `src/lib` is part of your library, everything inside `src/routes` can be used as a showcase or preview app.
+## Full Example
 
-## Building
+```ts
+import { sveltekit } from '@sveltejs/kit/vite';
+import { defineConfig } from 'vitest/config';
+import { ConsolePlugin } from './src/lib/index.js';
 
-To build your library:
-
-```bash
-npm run package
+export default defineConfig({
+	plugins: [sveltekit(), ConsolePlugin()],
+	test: {
+		include: ['src/**/*.{test,spec}.{js,ts}']
+	}
+});
 ```
 
-To create a production version of your showcase app:
+## Usage
+Use console.log normally on server code. You don't need to change anything.
 
-```bash
-npm run build
-```
+## Screenshots
 
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
-
-## Publishing
-
-Go into the `package.json` and give your package the desired name through the `"name"` option. Also consider adding a `"license"` field and point it to a `LICENSE` file which you can create from a template (one popular option is the [MIT license](https://opensource.org/license/mit/)).
-
-To publish your library to [npm](https://www.npmjs.com):
-
-```bash
-npm publish
-```
+![image](./static/scr.png)
