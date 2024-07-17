@@ -11,6 +11,8 @@ export function ConsolePlugin(): Plugin {
 		enforce: 'pre',
 
 		configureServer(server) {
+			import.meta.ws = server.ws;
+			globalThis.vite_ws = server.ws;
 			server.ws.on('connection', () => {
 				server.ws.send('my:greetings', { msg: 'hello' });
 			});
