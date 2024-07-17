@@ -11,6 +11,7 @@ export async function transform(context: Context) {
 
 	const accepted_langs = ['js', 'ts'];
 	const lang = getLang(id);
+
 	if (!accepted_langs.includes(lang)) {
 		return;
 	}

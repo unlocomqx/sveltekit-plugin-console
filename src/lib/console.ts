@@ -21,6 +21,8 @@ export function ConsolePlugin(): Plugin {
 		name: PLUGIN_NAME,
 		enforce: 'pre',
 
+		apply: 'serve',
+
 		configureServer(server) {
 			globalThis.spc_ws = server.ws;
 			globalThis.spc_stringify = stringify;
