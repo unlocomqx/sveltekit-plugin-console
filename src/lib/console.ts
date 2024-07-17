@@ -1,9 +1,9 @@
 import { PLUGIN_NAME } from './constants.js';
 import { cwd } from 'node:process';
 import { relative } from 'pathe';
-import { injectClientCode, transform } from './transformer';
+import { injectClientCode, transform } from './transformer.js';
 import { type Plugin, type WebSocketServer } from 'vite';
-import type { Context } from './types';
+import type { Context } from './types.js';
 import stringify from 'fast-safe-stringify';
 
 let collect_logs = true;

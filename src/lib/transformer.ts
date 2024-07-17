@@ -2,7 +2,7 @@ import type { Context } from './types.js';
 import MagicString from 'magic-string';
 import type { WithScope } from 'ast-kit';
 import { babelParse, getLang, walkAST } from 'ast-kit';
-import { isConsoleExpression } from './core/utils';
+import { isConsoleExpression } from './core/utils.js';
 import type { Node } from '@babel/types';
 
 export async function transform(context: Context) {
