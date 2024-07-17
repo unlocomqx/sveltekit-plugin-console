@@ -1,7 +1,7 @@
 <script>
-
+	import { enhance } from '$app/forms';
 </script>
 
-Project
-
-<a href="/test">test</a>
+<form method="post" use:enhance>
+	<button type="submit">Click</button>
+</form>

@@ -48,7 +48,10 @@ export async function transform(context: Context) {
 					.replace(/"/g, '');
 
 				if (consoleString) {
-					magicString.appendRight(expressionEnd,`;globalThis.spc_collect([${argsName}]);globalThis.spc_ws.send('spc:log', globalThis.spc_stringify([${argsName}]));`);
+					magicString.appendRight(expressionEnd,`;
+						globalThis.spc_can_collect() && globalThis.spc_collect([${argsName}]);
+						globalThis.spc_ws.send('spc:log', globalThis.spc_stringify([${argsName}]));
+					`);
 				}
 			}
 		}

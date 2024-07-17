@@ -1,7 +1,15 @@
 import { add } from "$lib/testfiles/testmodule";
-import type { PageLoad } from './$types';
+import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageLoad = () => {
+export const actions: Actions = {
+	default() {
+		console.log('default action');
+
+		return {}
+	}
+}
+
+export const load: PageServerLoad = () => {
 	// console.log(import.meta);
 	console.log('index.server.ts')
 	return {

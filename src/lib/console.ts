@@ -13,6 +13,7 @@ declare global {
 	var spc_ws: WebSocketServer;
 	var spc_stringify: typeof stringify;
 	var spc_collect: (log: string) => void;
+	var spc_can_collect: () => boolean;
 }
 
 export function ConsolePlugin(): Plugin {
@@ -25,6 +26,7 @@ export function ConsolePlugin(): Plugin {
 			globalThis.spc_stringify = stringify;
 			// fancy name for logs collected before the client is ready
 			log_drain = [];
+			globalThis.spc_can_collect = () => collect_logs;
 			globalThis.spc_collect = function(log: string) {
 				log_drain.push(log);
 			};
@@ -33,6 +35,15 @@ export function ConsolePlugin(): Plugin {
 				server.ws.send('spc:log_drain', stringify(log_drain));
 				log_drain = [];
 			});
+
+			return () => {
+				server.middlewares.use((req, res, next) => {
+					// reset log collection on each request
+					collect_logs = true;
+					log_drain = [];
+					next();
+				});
+			};
 		},
 
 		async transform(code, id, options) {
