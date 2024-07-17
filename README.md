@@ -39,3 +39,7 @@ Use console.log normally on your server code. You don't need to change anything.
 
 ## Is this secure?
 This plugin only works on serve mode. It does not affect your production build.
+
+## Todos
+[ ] provide file:line-number and make it clickable if possible  
+[ ] provide option to suppress logs on the server console (to avoid flooding)
