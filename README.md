@@ -35,4 +35,7 @@ export default defineConfig({
 ```
 
 ## Usage
-Use console.log normally on server code. You don't need to change anything.
+Use console.log normally on your server code. You don't need to change anything.
+
+## Is this secure?
+This plugin only works on serve mode. It does not affect your production build.
