@@ -2,10 +2,18 @@ import { PLUGIN_NAME } from './constants.js';
 import { cwd } from 'node:process';
 import { relative } from 'pathe';
 import { transform } from './transformer';
-import type { Plugin } from 'vite';
+import { type Plugin, type WebSocketServer } from 'vite';
 import type { Context } from './types';
-import * as devalue from 'devalue';
 import stringify from 'fast-safe-stringify';
+
+let collect_logs = true;
+let log_drain: string[] = [];
+
+declare global {
+	var spc_ws: WebSocketServer;
+	var spc_stringify: typeof stringify;
+	var spc_collect: (log: string) => void;
+}
 
 export function ConsolePlugin(): Plugin {
 	return {
@@ -13,11 +21,17 @@ export function ConsolePlugin(): Plugin {
 		enforce: 'pre',
 
 		configureServer(server) {
-			import.meta.ws = server.ws;
-			globalThis.vite_ws = server.ws;
-			globalThis.fast_stringify = stringify;
-			server.ws.on('connection', () => {
-				server.ws.send('my:greetings', { msg: 'hello' });
+			globalThis.spc_ws = server.ws;
+			globalThis.spc_stringify = stringify;
+			// fancy name for logs collected before the client is ready
+			log_drain = [];
+			globalThis.spc_collect = function(log: string) {
+				log_drain.push(log);
+			};
+			server.ws.on('spc:log_drain', () => {
+				collect_logs = false;
+				server.ws.send('spc:log_drain', stringify(log_drain));
+				log_drain = [];
 			});
 		},
 

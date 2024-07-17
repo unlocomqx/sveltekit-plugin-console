@@ -3,7 +3,7 @@ import type { PageLoad } from './$types';
 
 export const load: PageLoad = () => {
 	// console.log(import.meta);
-	console.log('ok' as string)
+	console.log('index.server.ts')
 	return {
 		sum: add(1, 2),
 	};
