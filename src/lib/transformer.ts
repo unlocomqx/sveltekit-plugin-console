@@ -48,7 +48,7 @@ export async function transform(context: Context) {
 					.replace(/"/g, '');
 
 				if (consoleString) {
-					magicString.appendRight(expressionEnd,`;globalThis.vite_ws.send('spc:log', ${argsName});`);
+					magicString.appendRight(expressionEnd,`;console.log(globalThis.fast_stringify([${argsName}]));globalThis.vite_ws.send('spc:log', globalThis.fast_stringify([${argsName}]));`);
 				}
 			}
 		}

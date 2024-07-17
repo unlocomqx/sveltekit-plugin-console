@@ -4,6 +4,8 @@ import { relative } from 'pathe';
 import { transform } from './transformer';
 import type { Plugin } from 'vite';
 import type { Context } from './types';
+import * as devalue from 'devalue';
+import stringify from 'fast-safe-stringify';
 
 export function ConsolePlugin(): Plugin {
 	return {
@@ -13,6 +15,7 @@ export function ConsolePlugin(): Plugin {
 		configureServer(server) {
 			import.meta.ws = server.ws;
 			globalThis.vite_ws = server.ws;
+			globalThis.fast_stringify = stringify;
 			server.ws.on('connection', () => {
 				server.ws.send('my:greetings', { msg: 'hello' });
 			});

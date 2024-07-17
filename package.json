@@ -54,6 +54,8 @@
 	"type": "module",
 	"dependencies": {
 		"ast-kit": "^1.0.0",
+		"devalue": "^5.0.0",
+		"fast-safe-stringify": "^2.1.1",
 		"magic-string": "^0.30.10",
 		"pathe": "^1.1.2"
 	}

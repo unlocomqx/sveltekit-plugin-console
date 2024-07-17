@@ -1,9 +1,9 @@
 import { add } from '$lib/testfiles/testmodule';
-import type { PageLoad } from './$types';
+import type { PageServerLoad } from './$types';
 
-export const load: PageLoad = () => {
+export const load: PageServerLoad = (event) => {
 	// console.log(import.meta);
-	console.log({ test: 'test' });
+	console.log(import.meta);
 	return {
 		sum: add(1, 2)
 	};
