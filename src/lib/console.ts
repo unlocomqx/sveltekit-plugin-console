@@ -1,7 +1,7 @@
 import { PLUGIN_NAME } from './constants.js';
 import { cwd } from 'node:process';
 import { relative } from 'pathe';
-import { transform } from './transformer';
+import { injectClientCode, transform } from './transformer';
 import { type Plugin, type WebSocketServer } from 'vite';
 import type { Context } from './types';
 import stringify from 'fast-safe-stringify';
@@ -49,6 +49,14 @@ export function ConsolePlugin(): Plugin {
 		},
 
 		async transform(code, id, options) {
+			if(/.svelte-kit\/generated\/root.js/.test(id)){
+				const context: Context = {
+					code,
+					id,
+					options
+				};
+				 return await injectClientCode(context)
+			}
 			if (!code?.includes('console')
 				|| /node_modules/.test(id)
 				|| !/\/src\//.test(id)) {

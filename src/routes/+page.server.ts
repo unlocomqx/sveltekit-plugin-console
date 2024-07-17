@@ -9,9 +9,9 @@ export const actions: Actions = {
 	}
 }
 
-export const load: PageServerLoad = () => {
+export const load: PageServerLoad = (event) => {
 	// console.log(import.meta);
-	console.log('index.server.ts')
+	console.log('index.server.ts', event)
 	return {
 		sum: add(1, 2),
 	};
