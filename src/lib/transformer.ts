@@ -50,8 +50,8 @@ export async function transform(context: Context) {
 
 				if (consoleString) {
 					magicString.appendRight(expressionEnd,`;
-						globalThis.spc_can_collect() && globalThis.spc_collect([${argsName}]);
-						globalThis.spc_ws.send('spc:log', globalThis.spc_stringify([${argsName}]));
+						globalThis.spc_can_collect?.() && globalThis.spc_collect([${argsName}]);
+						globalThis.spc_ws?.send('spc:log', globalThis.spc_stringify([${argsName}]));
 					`);
 				}
 			}
