@@ -17,10 +17,6 @@
     ".": {
       "types": "./dist/index.d.ts",
       "svelte": "./dist/index.js"
-    },
-    "svelte": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
     }
   },
   "files": [
