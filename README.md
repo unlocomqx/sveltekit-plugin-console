@@ -2,6 +2,8 @@
 
 Output server logs to the browser console.
 
+![image](./static/scr.png)
+
 ## Install
 
 ```shell
@@ -34,7 +36,3 @@ export default defineConfig({
 
 ## Usage
 Use console.log normally on server code. You don't need to change anything.
-
-## Screenshots
-
-![image](./static/scr.png)
