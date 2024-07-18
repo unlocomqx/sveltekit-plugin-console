@@ -1,17 +1,24 @@
-import { add } from "$lib/testfiles/testmodule";
+import { add } from '$lib/testfiles/testmodule';
 import type { Actions, PageServerLoad } from './$types';
 
 export const actions: Actions = {
-	default() {
+	click() {
 		console.log('default action');
 
-		return {}
-	}
-}
+		return {};
+	},
+	trouble() {
+		console.error('You caused trouble on the server');
 
-export const load: PageServerLoad = (event) => {
-	console.log('index.server.ts', event)
+		return {};
+	}
+};
+
+export const load: PageServerLoad = ({ url }) => {
+	console.log('index.server.ts', { url: url.href });
+	console.info('Here is some info');
+	console.warn('Here is a warning');
 	return {
-		sum: add(1, 2),
+		sum: add(1, 2)
 	};
 };

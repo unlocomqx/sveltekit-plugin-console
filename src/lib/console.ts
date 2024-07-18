@@ -16,7 +16,23 @@ declare global {
 	var spc_can_collect: () => boolean;
 }
 
-export function ConsolePlugin(): Plugin {
+export type PluginOptions = {
+	/**
+	 * Whether to print logs in the server console normally or to suppress them
+	 *
+	 * Default: true
+	 */
+	log_on_server?: boolean;
+}
+
+const defaultOptions: PluginOptions = {
+	log_on_server: true
+};
+
+export function ConsolePlugin(options?: PluginOptions): Plugin {
+
+	const plugin_options = { ...defaultOptions, ...(options ?? {}) };
+
 	return {
 		name: PLUGIN_NAME,
 		enforce: 'pre',
@@ -49,13 +65,13 @@ export function ConsolePlugin(): Plugin {
 		},
 
 		async transform(code, id, options) {
-			if(/.svelte-kit\/generated\/root.js/.test(id)){
+			if (/.svelte-kit\/generated\/root.js/.test(id)) {
 				const context: Context = {
 					code,
 					id,
 					options
 				};
-				 return await injectClientCode(context)
+				return await injectClientCode(context);
 			}
 			if (!code?.includes('console')
 				|| /node_modules/.test(id)
@@ -70,7 +86,7 @@ export function ConsolePlugin(): Plugin {
 					options
 				};
 
-				return await transform(context);
+				return await transform(context, plugin_options);
 			} catch (error) {
 				console.error(`[${PLUGIN_NAME}]`, `Transform ${relative(cwd(), id)} error:`, error);
 				return code;

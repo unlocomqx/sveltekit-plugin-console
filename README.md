@@ -34,6 +34,17 @@ export default defineConfig({
 });
 ```
 
+## Options
+```ts
+export type PluginOptions = {
+	/**
+	 * Whether to print logs in the server console normally or to suppress them
+	 *
+	 * Default: true
+	 */
+	log_on_server?: boolean;
+}
+```
 ## Usage
 Use console.log normally on your server code. You don't need to change anything.
 
@@ -42,4 +53,4 @@ This plugin only works on serve mode. It does not affect your production build.
 
 ## Todos
 - [ ] provide file:line-number and make it clickable if possible  
-- [ ] provide option to suppress logs on the server console (to avoid flooding)
+- [x] provide option to suppress logs on the server console (to avoid flooding)

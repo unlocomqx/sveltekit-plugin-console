@@ -3,9 +3,10 @@ import MagicString from 'magic-string';
 import type { WithScope } from 'ast-kit';
 import { babelParse, getLang, walkAST } from 'ast-kit';
 import { isConsoleExpression } from './core/utils.js';
-import type { Node } from '@babel/types';
+import { isIdentifier, isMemberExpression, type Node } from '@babel/types';
+import type { PluginOptions } from '$lib/console.js';
 
-export async function transform(context: Context) {
+export async function transform(context: Context, plugin_options: PluginOptions) {
 	const { code, id, options } = context;
 	const magicString = new MagicString(code);
 
@@ -33,12 +34,14 @@ export async function transform(context: Context) {
 				const originalLine = line;
 				const originalColumn = column;
 
-				// @ts-expect-error any
-				const args = node.arguments;
+				let member = 'log';
+				if (isMemberExpression(node.callee) && isIdentifier(node.callee.property)) {
+					member = node.callee.property.name;
+				}
 
+				const args = node.arguments;
 				const argsStart = args[0].start!;
 				const argsEnd = args[args.length - 1].end!;
-				const argType = args[0].type;
 
 				const consoleString = magicString.slice(expressionStart, expressionEnd);
 
@@ -49,10 +52,14 @@ export async function transform(context: Context) {
 					.replace(/"/g, '');
 
 				if (consoleString) {
-					magicString.appendRight(expressionEnd,`;
-						globalThis.spc_can_collect?.() && globalThis.spc_collect([${argsName}]);
-						globalThis.spc_ws?.send('spc:log', globalThis.spc_stringify([${argsName}]));
+					let log = `{type: ${JSON.stringify(member)}, args: globalThis.spc_stringify([${argsName}])}`;
+					magicString.appendRight(expressionEnd, `;
+						globalThis.spc_can_collect?.() && globalThis.spc_collect(${log});
+						globalThis.spc_ws?.send('spc:log', ${log});
 					`);
+					if (!plugin_options.log_on_server) {
+						magicString.remove(expressionStart, expressionEnd);
+					}
 				}
 			}
 		}
@@ -74,22 +81,33 @@ export async function injectClientCode(context: Context) {
 	const magicString = new MagicString(code);
 
 	function handleLog() {
-		const commonStyle = 'padding:2px 5px; border-radius:3px;margin-top:5px;color: #fff; background: #FF3E00;'
+		const commonStyle = 'padding:2px 5px; border-radius:3px;margin-top:5px;color: #fff; background: #FF3E00;';
+		const styles: {
+			[type: string]: string;
+		} = {
+			log: 'background: #FF3E00;',
+			info: 'background: #0078D4;',
+			warn: 'background: #FFAA00;',
+			error: 'background: #D70007;'
+		};
+
+		function spc_style(type: string) {
+			return commonStyle + (styles[type] ?? '');
+		}
+
 		if (import.meta.hot) {
 			import.meta.hot.send('spc:log_drain');
 			import.meta.hot.on('spc:log_drain', (data) => {
 				const items = JSON.parse(data);
 				if (Array.isArray(items)) {
-					if(items.length){
-						console.log('%c # Server loading logs', commonStyle);
-					}
-					for(let item of items) {
-						console.log(...item);
+					for (let { type, args } of items) {
+						const member: string = type in console ? type : 'log';
+						console.log('%c#', spc_style(type), ...JSON.parse(args));
 					}
 				}
 			});
-			import.meta.hot.on('spc:log', (data) => {
-				console.log('%c # Server log', commonStyle, ...JSON.parse(data));
+			import.meta.hot.on('spc:log', ({ type, args }) => {
+				console.log('%c#', spc_style(type), ...JSON.parse(args));
 			});
 		}
 	}

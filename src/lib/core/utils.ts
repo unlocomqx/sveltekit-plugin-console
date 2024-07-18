@@ -1,6 +1,6 @@
-import type { Node } from '@babel/types';
+import type { CallExpression, Node } from '@babel/types';
 
-export function isConsoleExpression(node: Node) {
+export function isConsoleExpression(node: Node): node is CallExpression {
 	return node.type === 'CallExpression'
 		&& node.callee.type === 'MemberExpression'
 		&& node.callee.object.type === 'Identifier'
