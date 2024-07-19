@@ -51,7 +51,6 @@
     "vite": "^5.3.4",
     "vitest": "^2.0.3"
   },
-  "svelte": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "type": "module",
   "dependencies": {
