@@ -103,7 +103,6 @@ export async function injectClientCode(context: Context) {
 				const items = JSON.parse(data);
 				if (Array.isArray(items)) {
 					for (let { type, args } of items) {
-						const member: string = type in console ? type : 'log';
 						console.log('%c#', spc_style(type), ...JSON.parse(args));
 					}
 				}
