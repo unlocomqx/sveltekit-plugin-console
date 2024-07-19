@@ -57,8 +57,10 @@ export async function transform(context: Context, plugin_options: PluginOptions)
 						globalThis.spc_can_collect?.() && globalThis.spc_collect(${log});
 						globalThis.spc_ws?.send('spc:log', ${log});
 					`);
-					if (!plugin_options.log_on_server) {
-						magicString.remove(expressionStart, expressionEnd);
+					if(member === 'log') {
+						if (!plugin_options.log_on_server) {
+							magicString.remove(expressionStart, expressionEnd);
+						}
 					}
 				}
 			}

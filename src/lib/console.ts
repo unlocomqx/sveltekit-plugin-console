@@ -18,7 +18,7 @@ declare global {
 
 export type PluginOptions = {
 	/**
-	 * Whether to print logs in the server console normally or to suppress them
+	 * Whether to print logs in the server console normally or to suppress them. Only applies to console.log statements
 	 *
 	 * Default: true
 	 */
