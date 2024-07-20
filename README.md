@@ -2,7 +2,7 @@
 
 Output server logs to the browser console.
 
-![image](./static/scr.png)
+![image](https://raw.githubusercontent.com/unlocomqx/sveltekit-plugin-console/main/static/scr.png)
 
 ## Install
 
