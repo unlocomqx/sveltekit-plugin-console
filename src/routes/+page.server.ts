@@ -18,6 +18,7 @@ export const load: PageServerLoad = ({ url }) => {
 	console.log('index.server.ts', { url: url.href });
 	console.info('Here is some info');
 	console.warn('Here is a warning');
+	console.log(`A template literal with ${url.href}`);
 	return {
 		sum: add(1, 2)
 	};

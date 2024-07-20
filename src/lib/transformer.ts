@@ -47,9 +47,6 @@ export async function transform(context: Context, plugin_options: PluginOptions)
 
 				const argsName = magicString.slice(argsStart, argsEnd)
 					.toString()
-					.replace(/`/g, '')
-					.replace(/\n/g, '')
-					.replace(/"/g, '');
 
 				if (consoleString) {
 					let log = `{type: ${JSON.stringify(member)}, args: globalThis.spc_stringify([${argsName}])}`;
