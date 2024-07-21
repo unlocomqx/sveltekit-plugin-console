@@ -56,7 +56,7 @@ export async function transform(context: Context, plugin_options: PluginOptions)
 					`);
 					if(member === 'log') {
 						if (!plugin_options.log_on_server) {
-							magicString.remove(expressionStart, expressionEnd);
+							magicString.appendLeft(expressionStart, 'typeof window !== "undefined" && ');
 						}
 					}
 				}
