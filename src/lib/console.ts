@@ -4,15 +4,14 @@ import { relative } from 'pathe';
 import { injectClientCode, transform } from './transformer.js';
 import { type Plugin, type WebSocketServer } from 'vite';
 import type { Context } from './types.js';
-// @ts-expect-error - arson has no types
-import arson from 'arson';
+import stringify from 'fast-safe-stringify';
 
 let collect_logs = true;
 let log_drain: string[] = [];
 
 declare global {
 	var spc_ws: WebSocketServer;
-	var spc_stringify: typeof arson;
+	var spc_stringify: typeof stringify;
 	var spc_collect: (log: string) => void;
 	var spc_can_collect: () => boolean;
 }
@@ -43,9 +42,7 @@ export function ConsolePlugin(options?: PluginOptions): Plugin {
 
 		configureServer(server) {
 			globalThis.spc_ws = server.ws;
-			globalThis.spc_stringify = (object: unknown) => {
-				return arson.stringify(object);
-			};
+			globalThis.spc_stringify = stringify;
 			// fancy name for logs collected before the client is ready
 			log_drain = [];
 			globalThis.spc_can_collect = () => collect_logs;
@@ -54,7 +51,7 @@ export function ConsolePlugin(options?: PluginOptions): Plugin {
 			};
 			server.ws.on('spc:log_drain', () => {
 				collect_logs = false;
-				server.ws.send('spc:log_drain', JSON.stringify(log_drain));
+				server.ws.send('spc:log_drain', stringify(log_drain));
 				log_drain = [];
 			});
 

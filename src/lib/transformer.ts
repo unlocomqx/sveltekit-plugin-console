@@ -46,7 +46,7 @@ export async function transform(context: Context, plugin_options: PluginOptions)
 				const consoleString = magicString.slice(expressionStart, expressionEnd);
 
 				const argsName = magicString.slice(argsStart, argsEnd)
-					.toString();
+					.toString()
 
 				if (consoleString) {
 					let log = `{type: ${JSON.stringify(member)}, args: globalThis.spc_stringify([${argsName}])}`;
@@ -54,7 +54,7 @@ export async function transform(context: Context, plugin_options: PluginOptions)
 						globalThis.spc_can_collect?.() && globalThis.spc_collect(${log});
 						globalThis.spc_ws?.send('spc:log', ${log});
 					`);
-					if (member === 'log') {
+					if(member === 'log') {
 						if (!plugin_options.log_on_server) {
 							magicString.appendLeft(expressionStart, 'typeof window !== "undefined" && ');
 						}
@@ -79,7 +79,7 @@ export async function injectClientCode(context: Context) {
 	const { code, id, options } = context;
 	const magicString = new MagicString(code);
 
-	function handleLog(arson: any) {
+	function handleLog() {
 		const commonStyle = 'padding:2px 5px; border-radius:3px;margin-top:5px;color: #fff; background: #FF3E00;';
 		const styles: {
 			[type: string]: string;
@@ -97,20 +97,20 @@ export async function injectClientCode(context: Context) {
 		if (import.meta.hot) {
 			import.meta.hot.send('spc:log_drain');
 			import.meta.hot.on('spc:log_drain', (data) => {
-				let items = JSON.parse(data);
+				const items = JSON.parse(data);
 				if (Array.isArray(items)) {
 					for (let { type, args } of items) {
-						console.log('%c#', spc_style(type), ...arson.parse(args));
+						console.log('%c#', spc_style(type), ...JSON.parse(args));
 					}
 				}
 			});
 			import.meta.hot.on('spc:log', ({ type, args }) => {
-				console.log('%c#', spc_style(type), ...arson.parse(args));
+				console.log('%c#', spc_style(type), ...JSON.parse(args));
 			});
 		}
 	}
 
-	magicString.append(`\n import('arson').then(arson => (${handleLog.toString()})(arson));`);
+	magicString.append(`\n(${handleLog.toString()})();`);
 
 	return {
 		code: magicString.toString(),
