@@ -1,6 +1,6 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vitest/config';
-import { ConsolePlugin } from './src/lib/index.js';
+import { ConsolePlugin } from 'sveltekit-plugin-console';
 
 console.log('start');
 
