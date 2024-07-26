@@ -6,7 +6,7 @@ export default defineConfig({
 	plugins: [
 		sveltekit(),
 		ConsolePlugin({
-			log_on_server: false
+			log_on_server: true
 		})
 	],
 	test: {
