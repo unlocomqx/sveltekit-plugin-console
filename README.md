@@ -14,7 +14,7 @@ pnpm add -D sveltekit-plugin-console
 
 ```ts
 // vite.config.ts
-import { ConsolePlugin } from './src/lib/index.js';
+import { ConsolePlugin } from 'sveltekit-plugin-console';
 ...
 plugins: [sveltekit(), ConsolePlugin()],
 ```
