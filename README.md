@@ -60,6 +60,7 @@ This plugin only works on serve mode. It does not affect your production build.
 
 - [ ] provide file:line-number and make it clickable if possible
 - [x] provide option to suppress logs on the server console (to avoid flooding)
+- [ ] use a better serialization method than fast-safe-stringify
 
 ## 🙏 Thanks
 
