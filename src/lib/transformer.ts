@@ -2,7 +2,7 @@ import type { Context } from './types.js';
 import MagicString from 'magic-string';
 import type { WithScope } from 'ast-kit';
 import { babelParse, getLang, walkAST } from 'ast-kit';
-import { isConsoleExpression } from './core/utils.js';
+import { isConsoleClearExpression, isConsoleExpression } from './core/utils.js';
 import { isIdentifier, isMemberExpression, type Node } from '@babel/types';
 import type { PluginOptions } from '$lib/console.js';
 
@@ -21,6 +21,20 @@ export async function transform(context: Context, plugin_options: PluginOptions)
 	});
 	walkAST<WithScope<Node>>(program, {
 		enter(node) {
+			if (isConsoleClearExpression(node)) {
+				const expressionStart = node.start!;
+				const expressionEnd = node.end!;
+
+				const { line, column } = node.loc!.start;
+				const originalLine = line;
+				const originalColumn = column;
+
+				let log = `{type: 'clear', args: []}`;
+				magicString.appendRight(expressionEnd, `;
+					globalThis.spc_can_collect?.() && globalThis.spc_collect(${log});
+					globalThis.spc_ws?.send('spc:log', ${log});
+				`);
+			}
 			if (isConsoleExpression(node)) {
 				const expressionStart = node.start!;
 				const expressionEnd = node.end!;
@@ -46,7 +60,7 @@ export async function transform(context: Context, plugin_options: PluginOptions)
 				const consoleString = magicString.slice(expressionStart, expressionEnd);
 
 				const argsName = magicString.slice(argsStart, argsEnd)
-					.toString()
+					.toString();
 
 				if (consoleString) {
 					let log = `{type: ${JSON.stringify(member)}, args: globalThis.spc_stringify([${argsName}])}`;
@@ -54,7 +68,7 @@ export async function transform(context: Context, plugin_options: PluginOptions)
 						globalThis.spc_can_collect?.() && globalThis.spc_collect(${log});
 						globalThis.spc_ws?.send('spc:log', ${log});
 					`);
-					if(member === 'log') {
+					if (member === 'log') {
 						if (!plugin_options.log_on_server) {
 							magicString.appendLeft(expressionStart, 'typeof window !== "undefined" && ');
 						}
@@ -100,13 +114,19 @@ export async function injectClientCode(context: Context) {
 				const items = JSON.parse(data);
 				if (Array.isArray(items)) {
 					for (let { type, args } of items) {
-						console.log('%c#', spc_style(type), ...JSON.parse(args));
+						outputLog({ type, args });
 					}
 				}
 			});
-			import.meta.hot.on('spc:log', ({ type, args }) => {
-				console.log('%c#', spc_style(type), ...JSON.parse(args));
-			});
+			// @ts-expect-error no types for this
+			let outputLog = ({ type, args }) => {
+				if (type === 'clear') {
+					console.clear();
+				} else {
+					console.log('%c#', spc_style(type), ...JSON.parse(args));
+				}
+			};
+			import.meta.hot.on('spc:log', outputLog);
 		}
 	}
 
