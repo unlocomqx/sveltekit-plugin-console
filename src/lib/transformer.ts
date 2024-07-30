@@ -93,7 +93,7 @@ export async function injectClientCode(context: Context) {
 	const { code, id, options } = context;
 	const magicString = new MagicString(code);
 
-	function handleLog() {
+	function handleLog(ARSON: typeof JSON) {
 		const commonStyle = 'padding:2px 5px; border-radius:3px;margin-top:5px;color: #fff; background: #FF3E00;';
 		const styles: {
 			[type: string]: string;
@@ -123,14 +123,14 @@ export async function injectClientCode(context: Context) {
 				if (type === 'clear') {
 					console.clear();
 				} else {
-					console.log('%c#', spc_style(type), ...JSON.parse(args));
+					console.log('%c#', spc_style(type), ...ARSON.parse(args));
 				}
 			};
 			import.meta.hot.on('spc:log', outputLog);
 		}
 	}
 
-	magicString.append(`\n(${handleLog.toString()})();`);
+	magicString.append(`\n${handleLog.toString()}; import('arson').then(({default: ARSON}) => handleLog(ARSON));`);
 
 	return {
 		code: magicString.toString(),
