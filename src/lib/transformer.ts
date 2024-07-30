@@ -63,7 +63,10 @@ export async function transform(context: Context, plugin_options: PluginOptions)
 					.toString();
 
 				if (consoleString) {
-					let log = `{type: ${JSON.stringify(member)}, args: globalThis.spc_stringify([${argsName}])}`;
+					let log = `{
+						type: ${JSON.stringify(member)}, 
+						args: globalThis.spc_stringify([${argsName}])
+					}`;
 					magicString.appendRight(expressionEnd, `;
 						globalThis.spc_can_collect?.() && globalThis.spc_collect(${log});
 						globalThis.spc_ws?.send('spc:log', ${log});
