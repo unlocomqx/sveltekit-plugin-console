@@ -1,6 +1,7 @@
 {
   "name": "sveltekit-plugin-console",
   "version": "0.1.10",
+  "repository": "https://github.com/unlocomqx/sveltekit-plugin-console",
   "scripts": {
     "dev": "vite dev",
     "build": "vite build && npm run package",
