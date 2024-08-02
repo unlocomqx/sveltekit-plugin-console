@@ -1,4 +1,4 @@
-import { PLUGIN_NAME } from './constants.js';
+import { PLUGIN_NAME, resolvedVirtualModuleId, virtualModuleId } from './constants.js';
 import { cwd } from 'node:process';
 import { relative } from 'pathe';
 import { injectClientCode, transform } from './transformer.js';
@@ -6,6 +6,8 @@ import { type Plugin, type WebSocketServer } from 'vite';
 import type { Context } from './types.js';
 // @ts-expect-error no types for this
 import ARSON from 'arson';
+import * as fs from 'node:fs';
+import path from 'node:path';
 
 let collect_logs = true;
 let log_drain: string[] = [];
@@ -40,6 +42,19 @@ export function ConsolePlugin(options?: PluginOptions): Plugin {
 		enforce: 'pre',
 
 		apply: 'serve',
+
+		resolveId(id) {
+			if (id === virtualModuleId) {
+				return resolvedVirtualModuleId;
+			}
+		},
+
+		load(id) {
+			if (id === resolvedVirtualModuleId) {
+				let import_path = path.resolve(import.meta.dirname,'./arson.js');
+				return fs.readFileSync(import_path, 'utf-8').toString();
+			}
+		},
 
 		configureServer(server) {
 			globalThis.spc_ws = server.ws;

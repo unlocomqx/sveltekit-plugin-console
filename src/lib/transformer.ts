@@ -133,7 +133,7 @@ export async function injectClientCode(context: Context) {
 		}
 	}
 
-	magicString.append(`\n${handleLog.toString()}; import('arson').then(({default: ARSON}) => handleLog(ARSON));`);
+	magicString.append(`\n${handleLog.toString()}; import('~arson').then(({default: ARSON}) => handleLog(ARSON));`);
 
 	return {
 		code: magicString.toString(),

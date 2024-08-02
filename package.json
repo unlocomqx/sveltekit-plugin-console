@@ -27,7 +27,6 @@
     "!dist/**/*.spec.*"
   ],
   "peerDependencies": {
-    "arson": "^0.2.6",
     "svelte": "^5.0.0-next.1"
   },
   "devDependencies": {
@@ -55,6 +54,7 @@
   "types": "./dist/index.d.ts",
   "type": "module",
   "dependencies": {
+    "arson": "^0.2.6",
     "ast-kit": "^1.0.0",
     "magic-string": "^0.30.11",
     "pathe": "^1.1.2"
